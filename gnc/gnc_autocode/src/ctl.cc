@@ -100,8 +100,6 @@ void GncCtlAutocode::Step(void) {
 
   /****from Simulink Controller*****/
   ctl_controller0_step(controller_, &ctl_input_, &cmd_, &ctl_);
-
-
 }
 
 void GncCtlAutocode::VarToCtlMsg() {
@@ -614,17 +612,14 @@ void GncCtlAutocode::UpdateModeCmd() {
   }
 }
 
-
- void GncCtlAutocode::Initialize(void) {
+void GncCtlAutocode::Initialize(void) {
   /****from Simulink Controller*****/
   ctl_controller0_initialize(controller_, &ctl_input_, &cmd_, &ctl_);
- }
+}
 
-
- void GncCtlAutocode::ReadParams(config_reader::ConfigReader* config) {
+void GncCtlAutocode::ReadParams(config_reader::ConfigReader* config) {
   /****from Simulink Controller*****/
   ctl_ReadParams(config, controller_);
- }
-
+}
 
 }  // end namespace gnc_autocode

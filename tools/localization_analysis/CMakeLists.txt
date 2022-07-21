@@ -69,6 +69,7 @@ if (USE_ROS)
     src/parameter_reader.cc
     src/sparse_mapping_pose_adder.cc
     src/utilities.cc
+    src/new_controller_tester.cc
   )
   add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
   target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
@@ -109,6 +110,13 @@ if (USE_ROS)
   target_link_libraries(run_sparse_mapping_pose_adder
     ${PROJECT_NAME} gflags gtsam ${catkin_LIBRARIES})
 
+
+  ## Declare a C++ executable: run_sparse_mapping_pose_adder
+  add_executable(run_new_controller_tester tools/run_new_controller_tester.cc)
+  add_dependencies(run_new_controller_tester ${catkin_EXPORTED_TARGETS})
+  target_link_libraries(run_new_controller_tester
+    ${PROJECT_NAME} gflags gtsam ${catkin_LIBRARIES})
+
 #############
 ## Install ##
 #############
@@ -126,6 +134,7 @@ install(TARGETS run_depth_odometry_adder DESTINATION bin)
 install(TARGETS run_graph_bag DESTINATION bin)
 install(TARGETS run_imu_bias_tester_adder DESTINATION bin)
 install(TARGETS run_sparse_mapping_pose_adder DESTINATION bin)
+install(TARGETS run_new_controller_tester DESTINATION bin)
 install(CODE "execute_process(
   COMMAND ln -s ../../bin/convert_depth_msg share/${PROJECT_NAME}
   COMMAND ln -s ../../bin/run_bag_imu_filterer share/${PROJECT_NAME}
@@ -133,9 +142,12 @@ install(CODE "execute_process(
   COMMAND ln -s ../../bin/run_graph_bag share/${PROJECT_NAME}
   COMMAND ln -s ../../bin/run_imu_bias_tester_adder share/${PROJECT_NAME}
   COMMAND ln -s ../../bin/run_sparse_mapping_pose_adder share/${PROJECT_NAME}
+  COMMAND ln -s ../../bin/run_new_controller_tester share/${PROJECT_NAME}
   WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}
   OUTPUT_QUIET
   ERROR_QUIET
   )")
 
+
+  catkin_package()
 endif (USE_ROS)
