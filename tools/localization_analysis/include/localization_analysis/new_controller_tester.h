@@ -32,10 +32,8 @@ namespace localization_analysis {
 class ControllerTester {
  public:
   ControllerTester();
-  
 
  private:
-  
 };
 }  // end namespace localization_analysis
 
