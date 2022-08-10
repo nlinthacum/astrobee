@@ -75,8 +75,9 @@ class GncCtlAutocode {
  private:
   int mode_cmd;
   bool stopped_mode;
-  float prev_filter[3];
-  int prev_mode_cmd[4];  // for the 4 ticks required  to swtich to stopped; newest val at index 0
+  float prev_filter_vel[3];
+  float prev_filter_omega[3];
+  int prev_mode_cmd[5];  // for the 4 ticks required  to switch to stopped; newest val at index 0
   float prev_position[3];
   float prev_att[4];
   float pos_err_parameter[3];  // in cex control executive
@@ -119,10 +120,28 @@ class GncCtlAutocode {
   float i_matrix[3][3];
   float rate_error[3];  // helper in rot control
   float body_torque_cmd[3];
+  float traj_pos_previous[3];
 
-  bool BelowThreshold(float velocity[], float threshhold);
+  // command shaper
+  bool cmd_B_inuse;
+  bool state_cmd_switch_out;
+  float cmd_timestamp_sec;
+  float cmd_timestamp_nsec;
+  float time_delta;
+  float traj_pos[3];
+  float traj_vel[3];
+  float traj_accel[3];
+  float traj_quat[4];
+  float traj_omega[3];
+  float traj_alpha[3];
+  float traj_error_pos;
+  float traj_error_att;
+  float traj_error_vel;
+  float traj_error_omega;
+
+  bool BelowThreshold(float velocity[], float threshhold, float previous[3]);
   void UpdateModeCmd(void);
-  float ButterWorthFilter(float input, float previous);
+  float ButterWorthFilter(float input, float& delay_val);
   bool CmdModeMakeCondition();
   void UpdateStoppedMode();
   void UpdatePosAndQuat();
@@ -156,6 +175,23 @@ class GncCtlAutocode {
   void CrossProduct(float vecA[3], float vecB[3], float vecOut[3]);
 
   void VarToCtlMsg();
+
+  // for testing
+  void BeforeSimulink(ctl_input_msg &before_ctl_input_, cmd_msg &before_cmd_, ctl_msg &before_ctl_);
+  void AfterSimulink(ctl_input_msg &after_ctl_input_, cmd_msg &after_cmd_, ctl_msg &after_ctl_);
+  void RevertBackToBeforeSimulink(ctl_input_msg &before_ctl_input_, cmd_msg &before_cmd_, ctl_msg &before_ctl_);
+  void RevertBackToAfterSimulink(ctl_input_msg &after_ctl_input_, cmd_msg &after_cmd_, ctl_msg &after_ctl_);
+
+  // command shaper
+  void CmdSelector();
+  void GenerateCmdPath();
+  void GenerateCmdAttitude();
+  void CreateOmegaMatrix(float input[3], float output[4][4]);
+  void FindTrajQuat();
+  void MatrixMultiplication4x4(float inputA[4][4], float inputB[4][4], float output[4][4]);
+  void MatrixMultiplication4x1(float four[4][4], float one[4], float output[4]);
+  void FindTrajErrors();
+  void PublishCmdInput();
 };
 }  // end namespace gnc_autocode
 
